@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Real-Time ML-Based Audio Classification Device for Accessibility and Safety</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #F2EEE3;
+    --paper-2: #E9E4D6;
+    --ink: #0E0E0C;
+    --ink-soft: #2A2A26;
+    --muted: #6B665B;
+    --rule: #1F1E1B;
+    --hairline: rgba(14, 14, 12, 0.14);
+    --alarm: #D9381E;
+    --alarm-deep: #A82A14;
+    --teal: #1F4E5C;
+    --signal: #E8E1CD;
+    --highlight: #F6E27A;
+
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Inter Tight", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+    --maxw: 1240px;
+    --readw: 720px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    font-weight: 400;
+    overflow-x: hidden;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(14,14,12,0.045) 1px, transparent 0);
+    background-size: 3px 3px;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+  }
+
+  /* ============ TOP NAV ============ */
+  .topnav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    backdrop-filter: saturate(140%);
+  }
+  .topnav-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .brand-dot {
+    width: 9px; height: 9px;
+    background: var(--alarm);
+    border-radius: 50%;
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.55; transform: scale(0.85); }
+  }
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  .nav-links a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { border-bottom-color: var(--alarm); color: var(--ink); }
+  .nav-toggle { display: none; }
+
+  @media (max-width: 820px) {
+    .nav-links { display: none; }
+  }
+
+  /* ============ HERO ============ */
+  .hero {
+    position: relative;
+    padding: 72px 32px 120px;
+    border-bottom: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .hero-inner { max-width: var(--maxw); margin: 0 auto; position: relative; z-index: 2; }
+
+  .meta-line {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .meta-line::before {
+    content: "";
+    width: 36px;
+    height: 1px;
+    background: var(--ink);
+  }
+  .meta-line .alarm-tag {
+    background: var(--alarm);
+    color: var(--paper);
+    padding: 3px 8px;
+    letter-spacing: 0.16em;
+  }
+
+  .hero h1 {
+    font-family: var(--font-display);
+    font-weight: 380;
+    font-size: clamp(40px, 7.6vw, 104px);
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    margin-bottom: 28px;
+    font-variation-settings: "opsz" 144, "SOFT" 30;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--alarm);
+    font-weight: 320;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-style: italic;
+    font-weight: 320;
+    color: var(--ink-soft);
+    max-width: 880px;
+    margin-bottom: 56px;
+    line-height: 1.4;
+  }
+
+  .hero-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .hero-meta-cell {
+    padding: 22px 24px 22px 0;
+    border-right: 1px solid var(--hairline);
+  }
+  .hero-meta-cell:last-child { border-right: none; }
+  .hero-meta-cell:not(:first-child) { padding-left: 24px; }
+  .hero-meta-cell .label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .hero-meta-cell .value {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .hero-meta-cell .value small {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+    margin-top: 4px;
+  }
+  @media (max-width: 820px) {
+    .hero-meta-grid { grid-template-columns: 1fr 1fr; }
+    .hero-meta-cell { border-bottom: 1px solid var(--hairline); }
+    .hero-meta-cell:nth-child(2) { border-right: none; }
+    .hero-meta-cell:nth-child(3),
+    .hero-meta-cell:nth-child(4) { border-bottom: none; }
+  }
+
+  /* Hero waveform decoration */
+  .hero-wave {
+    position: absolute;
+    right: -40px;
+    top: 80px;
+    width: 540px;
+    height: 540px;
+    opacity: 0.55;
+    z-index: 1;
+    pointer-events: none;
+  }
+  @media (max-width: 1100px) { .hero-wave { display: none; } }
+
+  /* ============ SECTION ============ */
+  section {
+    padding: 110px 32px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+  }
+  .section-inner { max-width: var(--maxw); margin: 0 auto; position: relative; }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 32px;
+    align-items: baseline;
+    margin-bottom: 56px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .section-num {
+    font-family: var(--font-display);
+    font-size: 88px;
+    font-style: italic;
+    font-weight: 280;
+    line-height: 1;
+    color: var(--alarm);
+    letter-spacing: -0.04em;
+  }
+  .section-title-block { padding-top: 18px; }
+  .section-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(34px, 4.4vw, 56px);
+    font-weight: 360;
+    letter-spacing: -0.02em;
+    line-height: 1.04;
+  }
+  @media (max-width: 720px) {
+    .section-head { grid-template-columns: 1fr; gap: 12px; }
+    .section-num { font-size: 64px; }
+  }
+
+  /* Subsection heading */
+  .sub-h {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 480;
+    letter-spacing: -0.01em;
+    margin: 56px 0 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+  }
+  .sub-h::before {
+    content: attr(data-num);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--alarm);
+    font-weight: 500;
+  }
+
+  /* Body content */
+  .prose {
+    max-width: var(--readw);
+    font-size: 17.5px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+  }
+  .prose p { margin-bottom: 1.2em; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { color: var(--ink); font-weight: 600; }
+  .prose em { font-style: italic; }
+  .prose ul {
+    margin: 0 0 1.4em 0;
+    padding-left: 0;
+    list-style: none;
+  }
+  .prose ul li {
+    padding-left: 28px;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .prose ul li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0.7em;
+    width: 14px; height: 1px;
+    background: var(--alarm);
+  }
+  .prose .lead {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 380;
+    font-style: italic;
+    line-height: 1.45;
+    color: var(--ink);
+    margin-bottom: 1.4em;
+  }
+  .prose code, .prose .mono {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--paper-2);
+    padding: 1px 6px;
+    border-radius: 2px;
+  }
+
+  /* Pull-quote / callout */
+  .callout {
+    border-left: 3px solid var(--alarm);
+    padding: 6px 0 6px 22px;
+    margin: 28px 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 21px;
+    font-weight: 380;
+    color: var(--ink);
+    line-height: 1.4;
+    max-width: 700px;
+  }
+
+  /* Two-column for executive summary outcomes */
+  .twocol {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+  }
+  @media (max-width: 820px) { .twocol { grid-template-columns: 1fr; gap: 32px; } }
+
+  /* ============ STAT CARDS ============ */
+  .stats-band {
+    background: var(--ink);
+    color: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    padding: 80px 32px;
+  }
+  .stats-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat {
+    border-right: 1px solid rgba(242, 238, 227, 0.15);
+    padding: 0 28px;
+  }
+  .stat:last-child { border-right: none; }
+  .stat:first-child { padding-left: 0; }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: clamp(48px, 5.8vw, 76px);
+    font-weight: 320;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+    font-variation-settings: "opsz" 144;
+  }
+  .stat-num .unit {
+    font-size: 0.5em;
+    color: var(--alarm);
+    font-style: italic;
+    margin-left: 4px;
+    font-weight: 380;
+  }
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(242, 238, 227, 0.65);
+    line-height: 1.55;
+  }
+  @media (max-width: 820px) {
+    .stats-inner { grid-template-columns: 1fr 1fr; gap: 40px 0; }
+    .stat { padding: 0 18px; }
+    .stat:nth-child(2) { border-right: none; }
+  }
+
+  /* ============ FIGURE PLACEHOLDER ============ */
+  figure.figure-placeholder {
+    margin: 40px 0;
+    border: 1px dashed var(--ink-soft);
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 8px,
+        rgba(14,14,12,0.025) 8px,
+        rgba(14,14,12,0.025) 16px
+      );
+    padding: 60px 28px;
+    text-align: center;
+  }
+  .placeholder-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--alarm);
+    margin-bottom: 12px;
+  }
+  .placeholder-title {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-soft);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .placeholder-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 14px;
+  }
+  figure figcaption {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--muted);
+    margin-top: 14px;
+    line-height: 1.5;
+  }
+  figure figcaption strong {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+    margin-right: 10px;
+  }
+
+  /* ============ TABLE ============ */
+  .params-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 32px 0 12px;
+    font-size: 14.5px;
+  }
+  .params-table caption {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--muted);
+    text-align: left;
+    margin-top: 14px;
+    caption-side: bottom;
+    line-height: 1.5;
+  }
+  .params-table caption strong {
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    font-weight: 500;
+    margin-right: 10px;
+  }
+  .params-table thead {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .params-table th, .params-table td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: top;
+  }
+  .params-table th {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .params-table tbody tr:hover { background: var(--paper-2); }
+  .params-table .param-name {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--ink);
+    width: 22%;
+  }
+  .params-table .param-val {
+    font-family: var(--font-mono);
+    color: var(--alarm-deep);
+    font-weight: 500;
+    width: 14%;
+  }
+
+  /* ============ DEMO VIDEO SECTION ============ */
+  .demo {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 110px 32px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    overflow: hidden;
+  }
+  .demo::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(transparent 0%, transparent calc(100% - 1px), rgba(242,238,227,0.05) 100%);
+    background-size: 100% 8px;
+    pointer-events: none;
+  }
+  .demo-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    position: relative;
+  }
+  .demo h2 {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.4vw, 42px);
+    font-weight: 380;
+    font-style: italic;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin-bottom: 44px;
+    max-width: 880px;
+    color: rgba(242,238,227,0.92);
+  }
+
+  .video-frame {
+    aspect-ratio: 16 / 9;
+    background: #050505;
+    border: 1px solid rgba(242,238,227,0.18);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .video-frame video,
+  .video-frame iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+  }
+
+  /* Placeholder shown when no video is provided */
+  .video-placeholder {
+    text-align: center;
+    padding: 40px;
+    width: 100%;
+  }
+  .video-placeholder .play {
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 24px;
+    border: 2px solid var(--alarm);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: transform 0.25s, background 0.25s;
+  }
+  .video-placeholder .play::after {
+    content: "";
+    width: 0; height: 0;
+    border-left: 20px solid var(--alarm);
+    border-top: 13px solid transparent;
+    border-bottom: 13px solid transparent;
+    margin-left: 6px;
+  }
+  .video-placeholder .play:hover {
+    transform: scale(1.06);
+    background: rgba(217, 56, 30, 0.12);
+  }
+  .video-placeholder .corner-marks {
+    position: absolute;
+    inset: 18px;
+    pointer-events: none;
+  }
+  .video-placeholder .corner-marks::before,
+  .video-placeholder .corner-marks::after {
+    content: "";
+    position: absolute;
+    width: 22px; height: 22px;
+    border: 1px solid rgba(242,238,227,0.35);
+  }
+  .video-placeholder .corner-marks::before {
+    top: 0; left: 0;
+    border-right: none; border-bottom: none;
+  }
+  .video-placeholder .corner-marks::after {
+    bottom: 0; right: 0;
+    border-left: none; border-top: none;
+  }
+  .video-placeholder p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(242,238,227,0.55);
+  }
+
+  /* ============ TEAM ============ */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .team-card {
+    padding: 36px 28px 36px 0;
+    border-right: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--rule);
+  }
+  .team-card:last-child { border-right: none; }
+  .team-card:not(:first-child) { padding-left: 28px; }
+  .team-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 460;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .team-degree {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--alarm);
+    margin-bottom: 16px;
+  }
+  .team-bio {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  .team-email {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+  }
+  .team-email:hover { color: var(--alarm); border-bottom-color: var(--alarm); }
+  @media (max-width: 820px) {
+    .team-grid { grid-template-columns: 1fr; }
+    .team-card { border-right: none; padding-left: 0 !important; padding-right: 0; }
+  }
+
+  /* ============ APPENDIX ============ */
+  .appendix-block { margin-bottom: 48px; }
+  .appendix-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--alarm);
+    margin-bottom: 8px;
+  }
+
+  /* ============ FOOTER ============ */
+  footer {
+    background: var(--paper);
+    padding: 72px 32px 36px;
+  }
+  .footer-inner {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    gap: 48px;
+    border-top: 1px solid var(--rule);
+    padding-top: 48px;
+  }
+  .footer-block h4 {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--alarm);
+    margin-bottom: 14px;
+    font-weight: 500;
+  }
+  .footer-block p, .footer-block a {
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    line-height: 1.7;
+    display: block;
+  }
+  .footer-block a:hover { color: var(--alarm); }
+  .footer-bottom {
+    max-width: var(--maxw);
+    margin: 56px auto 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  @media (max-width: 720px) {
+    .footer-inner { grid-template-columns: 1fr; gap: 36px; }
+    .footer-bottom { flex-direction: column; gap: 8px; }
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ============== TOP NAV ============== -->
+<nav class="topnav">
+  <div class="topnav-inner">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <span>ESE 4970 — Capstone Design Project</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#summary">Executive Summary</a></li>
+      <li><a href="#background">Background</a></li>
+      <li><a href="#methods">Methods</a></li>
+      <li><a href="#demo">Demonstration</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#discussion">Discussion</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============== HERO ============== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="meta-line">
+      <span class="alarm-tag">Final Report</span>
+      <span>Submitted to the Department of Electrical and Systems Engineering</span>
+    </div>
+    <h1>Real-Time<br/>ML-Based Audio<br/><em>Classification</em> Device<br/>for Accessibility<br/>and Safety</h1>
+    <p class="hero-tagline">Everyday environments are filled with informational sounds&nbsp;— such as fire alarms, doorbells, microwave beeps, ringing phones, running water&nbsp;— that people who have auditory disabilities, or are simply out of earshot, can miss.</p>
+
+    <div class="hero-meta-grid">
+      <div class="hero-meta-cell">
+        <div class="label">Group Members</div>
+        <div class="value">Shua Jeon · Kevin Gutierrez · Keshav Vasanth<small>B.S. Electrical Engineering '26<br/>Dept. of Electrical &amp; Systems Engineering</small></div>
+      </div>
+      <div class="hero-meta-cell">
+        <div class="label">Faculty Instructor &amp; Project Client</div>
+        <div class="value">Prof. Dorothy Wang<small>Dept. of Electrical &amp; Systems Engineering</small></div>
+      </div>
+      <div class="hero-meta-cell">
+        <div class="label">Project Period</div>
+        <div class="value">January 2026 – May 2026</div>
+      </div>
+      <div class="hero-meta-cell">
+        <div class="label">Date of Submission</div>
+        <div class="value">May 1, 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative waveform -->
+  <svg class="hero-wave" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D9381E" stop-opacity="0.85"/>
+        <stop offset="100%" stop-color="#0E0E0C" stop-opacity="0.7"/>
+      </linearGradient>
+    </defs>
+    <g fill="none" stroke="url(#ringGrad)" stroke-width="1">
+      <circle cx="300" cy="300" r="60"/>
+      <circle cx="300" cy="300" r="105"/>
+      <circle cx="300" cy="300" r="155"/>
+      <circle cx="300" cy="300" r="210"/>
+      <circle cx="300" cy="300" r="270" stroke-dasharray="2 4"/>
+    </g>
+    <g stroke="#0E0E0C" stroke-width="1.2" fill="none" opacity="0.55">
+      <path d="M 60 300 Q 80 280 100 300 T 140 300 T 180 300 T 220 300 T 260 300 T 300 300"/>
+      <path d="M 300 300 Q 320 250 340 300 T 380 300 T 420 270 T 460 300 T 500 290 T 540 300"/>
+    </g>
+    <g fill="#D9381E">
+      <circle cx="300" cy="300" r="4"/>
+    </g>
+  </svg>
+</header>
+
+<!-- ============== EXECUTIVE SUMMARY ============== -->
+<section id="summary">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Executive Summary</h2>
+      </div>
+    </div>
+
+    <h3 class="sub-h" data-num="1.1">Overall Objective and Problem Statement</h3>
+    <div class="prose">
+      <p>Everyday environments are filled with informational sounds (such as fire alarms, doorbells, microwave beeps, ringing phones, running water) that people who have auditory disabilities, or are simply out of earshot, can miss. The objective of this project was to design and build a real-time, ML-based audio classification device that reliably identifies a fixed set of accessibility-relevant sounds (even in noisy conditions) and communicates them through a visual display. This included real-time operation on two microphone circuits, and classification accuracy at low signal-to-noise ratios (SNRs).</p>
+    </div>
+
+    <h3 class="sub-h" data-num="1.2">Aims and Objectives</h3>
+    <div class="prose">
+      <ul>
+        <li>1) <strong>Hardware:</strong> Design and construct a circuit using two ESP32 microphones capable of wireless data transfer and connecting to a laptop for real-time visual display.</li>
+        <li>2) <strong>Software:</strong> Build a digital audio-processing and classification pipeline capable of cleaning noisy audio and classifying a set of five sound events (fire alarm, phone ringtone, microwave beep, doorbell, and water running).</li>
+        <li>3) <strong>Integration &amp; Validation:</strong> Integrate hardware and software into a continuously running system, test its accuracy across different levels of noisy environments, and tune operating parameters for the best accuracy and latency compromise.</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-h" data-num="1.3">Key Outcomes</h3>
+    <div class="prose">
+      <ul>
+        <li>Made a real-time audio classifier running on two ESP32 microphone inputs, with a laptop GUI (graphical user interface).</li>
+        <li>A two-stage digital noise processing program (spectral-gate noise suppressor and voice-band notch filter), combined with transience and harmonic-peak detection, improved the SNR range over which YAMNet produced any event triggers to below −1.5 dB. The stock model only triggered events above an SNR of 10 dB.</li>
+        <li>Fusing the sub-labels outputted by YAMNet recovered a large fraction of the accuracy that it loses to room noise (after digital noise processing is done) without retraining the ML program. With a tuned saturation coefficient Ω_K, overall classification accuracy increased by at least 75% across every tested SNR value.</li>
+        <li>The system maintains above 50% average correct-label accuracy across all five labels and reaches 100% accuracy on the &ldquo;Water Running&rdquo; event down to -1.5 dB SNR.</li>
+        <li>This entire sound classification system is achievable on inexpensive ESP32 microphone hardware when the program's pipeline is carefully tuned.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== BACKGROUND ============== -->
+<section id="background">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Background and Justification</h2>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Approximately 1 in 8 people in the United States have hearing loss in both ears, and many more experience temporary or situational hearing limitations (sleeping, wearing headphones, being in a different room of the home) [SOURCE]. Commercial products addressing this problem (such as visual smoke alarms, synced lighting throughout a house, app notifications, etc.) are usually device-specific, expensive, and difficult to install. A general-purpose sound classifier that operates on a small circuit, and wirelessly connects to a visual display (such as a laptop) would fill this gap.</p>
+
+      <p>This project also builds on the ESE 3310 microphone-circuit laboratory developed by Prof. Wang, redesigning the basic audio processing circuit into an integrated audio-visual interface that detects and classifies a fixed set of sounds across a wide range of auditory environments, and displays the resulting identification visually in real time.</p>
+
+      <div class="callout">The contribution is not a new neural network, but rather an integrated hardware and software system in which audio pre-processing, conditional detections and boosts, and score fusion are combined to make a stock ML model usable in noisy real-world conditions.</div>
+
+      <p>YAMNet is an open-source audio classification model trained on 521 audio classes [SOURCE]. It was decided upon as the foundation of the audio classification program because of its broad classification capability, and the plethora of instructions, literature, and walkthroughs regarding its use that were available. The drawback of YAMNet is that it was trained on relatively isolated audio clips and massively underperforms in realistic noisy environments.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== METHODS ============== -->
+<section id="methods">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Methods</h2>
+      </div>
+    </div>
+
+    <h3 class="sub-h" data-num="3.1">System Overview</h3>
+    <div class="prose">
+      <p>The complete system consists of two ESP32 microphone circuits with analog filtration and wireless data transfer to a laptop, and a software implementing the processing and classification pipeline shown in Figure 1.</p>
+    </div>
+
+    <figure>
+      <img src="figure1.png" alt="Audio event processing pipeline" style="width:100%; height:auto; display:block;">
+      <figcaption><strong>Figure 1</strong>Audio event processing pipeline.</figcaption>
+    </figure>
+
+    <h3 class="sub-h" data-num="3.2">Pre-Processing Front End</h3>
+    <div class="prose">
+      <p><strong>Spectral Gate Noise Suppressor:</strong> This part of the system listens for steady, background sounds in the room, such as air conditioning, fans, and low hums, and turns them down. To do this, it uses a Short-Time Fourier Transform (STFT), where it divides the incoming audio into short slices and measures what frequencies are present in each slice. To determine what counts as noise, the program takes the quietest recent slices and classifies them as the room's baseline noise. It then creates a mask which lowers the magnitude of those frequencies rather than completely removing them. This prevents any potentially important audio from being removed entirely. Because the spectral profile of noise will differ between environments, the program continually updates its measuring and classification of baseline noise.</p>
+
+      <p><strong>Voice-Band Notch Filter:</strong> This second stage turns down the range of pitches human voices occupy, which is roughly 100 to 3,400 Hz [SOURCE]. The magnitude of reduction is capped at 8 dB deliberately so events such as doorbells and water running (which occasionally exist in this range as well) aren't fully cut-off. The frequency is capped at 3.4 kHz because alarms and ringtones contain a lot of high-pitched overtones above that threshold.</p>
+    </div>
+
+    <h3 class="sub-h" data-num="3.3">Classifier and Auxiliary Detectors</h3>
+    <div class="prose">
+      <p>The cleaned 5-second audio window is fed into YAMNet, which returns a matrix of confidence scores mapped to different labels. Because YAMNet under weighs very short transient sounds (knocks and single beeps) and very long sustained tonal sounds (some alarms and ringtones), two detectors run in parallel and are conditionally added into the pipeline:</p>
+      <ul>
+        <li><strong>Transience detector:</strong> Computes spectral flux (the difference between consecutive frames). Sharp onsets are created by knocks and beeps, which can then be detected. If they are detected, a multiplier of 1.5 (50% boost) is applied on the labels under the &ldquo;knock&rdquo; and &ldquo;beep&rdquo; categories (e.g. &ldquo;door&rdquo;, &ldquo;bump&rdquo;, &ldquo;beep boop&rdquo;, &ldquo;ping&rdquo;) to increase their confidence scores.</li>
+        <li><strong>Harmonic peak detector.</strong> Searches for the opposite of a transience detector: narrow, steady tones, which are usually characteristic of fire-alarms and ringtones. If detected, similarly a multiplier of 1.5 is applied to the labels under the &ldquo;alarm&rdquo; and &ldquo;ringtone&rdquo; categories (e.g. &ldquo;ring&rdquo;, &ldquo;music&rdquo;, &ldquo;boom&rdquo;).</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-h" data-num="3.4">Event Fusion and Scoring</h3>
+    <div class="prose">
+      <p>Since YAMNet spreads its confidence across many output labels rather than committing to a single event, the five target events (fire alarm, phone ringtone, microwave beep, doorbell, and water running) are each defined by a list of related YAMNet sub-labels (e.g. &ldquo;water&rdquo;, &ldquo;faucet&rdquo;, &ldquo;drip&rdquo;, and &ldquo;shower&rdquo; all under the event &ldquo;water running&rdquo;). For each event, the matching sub-label scores are summed and put through an exponential-saturation function:</p>
+
+      <div class="callout"><em>Final_confidence = 1 − exp( −Ω_K · Σ sublabel_scores )</em></div>
+
+      <p>where Ω_K is a tunable coefficient that controls how strongly the sum of confidence values is compressed into the bounded interval (0, 1). The exponential form guarantees the final confidence value stays between 0 and 1 regardless of how many sub-labels fire. This category-aggregation step is the single most important addition for events where confidence is spread across several sub-labels, none of which individually clear the minimum score threshold, but together represent very strong evidence.</p>
+
+      <p>An event is finally reported only after a multi-frame voting check is passed. At least VOTES_REQUIRED of the last VOTE_WINDOW inferences must agree. Every reported event has a minimum cooldown before it can be triggered again, and every per-event final vote must clear a minimum confidence threshold. The full set of tunable parameters and their final values is summarized in Table 1.</p>
+    </div>
+
+    <table class="params-table">
+      <caption><strong>Table 1</strong>Tunable parameters of the audio classification program and their final operating values.</caption>
+      <thead>
+        <tr><th>Parameter</th><th>Final value</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="param-name">MIN_SCORE</td><td class="param-val">0.20</td><td>Minimum per-event confidence that counts as a vote.</td></tr>
+        <tr><td class="param-name">VOTE_WINDOW</td><td class="param-val">10</td><td>Rolling buffer of the last N inferences used for voting.</td></tr>
+        <tr><td class="param-name">VOTES_REQUIRED</td><td class="param-val">2</td><td>Minimum agreeing votes within the window before an event fires.</td></tr>
+        <tr><td class="param-name">COOLDOWN_S</td><td class="param-val">6.0 s</td><td>Minimum gap between two triggers of the same event.</td></tr>
+        <tr><td class="param-name">INFER_WINDOW_S</td><td class="param-val">5.0 s</td><td>Length of audio window passed to YAMNet on each inference call.</td></tr>
+        <tr><td class="param-name">INFER_EVERY_S</td><td class="param-val">0.5 s</td><td>How often inference runs (heavy window overlap).</td></tr>
+        <tr><td class="param-name">Ω_K</td><td class="param-val">1.0</td><td>Coefficient in the exponential-saturation event fusion; controls how influential the sum of sub-label confidences is.</td></tr>
+      </tbody>
+    </table>
+
+    <h3 class="sub-h" data-num="3.5">Hardware Implementation</h3>
+    <div class="prose">
+      <p>Two integrated ESP32 microphone circuits were built. Each board has an analog filtration network (op-amp-based gain and band shaping shown in Figure 2) ahead of the ESP32, which digitizes the signal and forwards it to laptop over Wi-Fi, which drives a GUI that displays the most recently detected event.</p>
+    </div>
+
+    <figure>
+      <img src="figure2.png" alt="Physical filtration circuit diagram of one ESP32 microphone setup" style="width:100%; height:auto; display:block;">
+      <figcaption><strong>Figure 2</strong>Physical filtration circuit diagram of one ESP32 microphone setup.</figcaption>
+    </figure>
+
+    <h3 class="sub-h" data-num="3.6">Development Cycle</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Baseline:</strong> Stock YAMNet was run on raw 16 kHz microphone audio to establish a performance floor.</li>
+        <li><strong>Noise characterization:</strong> Recordings were collected in three representative environments: a library, a dorm kitchen, and a building hallway. These were used to profile realistic noise floors.</li>
+        <li><strong>Front-end filtering:</strong> The STFT-based spectral-gate suppressor was added for stationary noise, and the voice-band notch was added for chatter-based noise.</li>
+        <li><strong>Auxiliary detectors:</strong> Because YAMNet underweighted both very short transients and long tonal sounds, the spectral-flux transience detector and the harmonic peak detector were added.</li>
+        <li><strong>Hardware integration.</strong> The program was tested on the two integrated ESP32 microphone circuits, which revealed discrepancies in normalization and sensitivity between laptop and ESP32 microphone inputs.</li>
+        <li><strong>Fusion and tuning:</strong> Exponential-saturation scoring was implemented and Ω_K and SNR values were swept to choose final operating points.</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-h" data-num="3.7">Initial Errors and Mitigations</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Noise-floor drift:</strong> A fixed noise estimate failed when the device was moved between environments (especially from library to the kitchen). The fix was a rolling percentile-based estimate.</li>
+        <li><strong>Latency vs. accuracy.</strong> A 10-second analysis window gave the best accuracy but felt too unresponsive. A 5-second window with overlapping 0.5-second loops was chosen as the final compromise.</li>
+        <li><strong>Hardware mismatch.</strong> The ESP32 circuits initially displayed incorrectly in the program because of inconsistent normalization and unstable Wi-Fi connections. Both were eventually rectified.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DEMO VIDEO ============== -->
+<section id="demo" class="demo">
+  <div class="demo-inner">
+    <h2>A real-time audio classifier running on two ESP32 microphone inputs, with a laptop GUI.</h2>
+
+    <div class="video-frame">
+      <!--
+        ============================================================
+        VIDEO EMBED — choose ONE of the options below.
+        ============================================================
+
+        OPTION A · LOCAL FILE
+        Replace the <div class="video-placeholder"> block below with:
+
+        <video controls poster="poster.jpg" preload="metadata">
+          <source src="demo.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+
+        OPTION B · YOUTUBE
+        Replace the placeholder block with:
+
+        <iframe
+          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+          title="Device demonstration"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+
+        OPTION C · VIMEO
+        <iframe src="https://player.vimeo.com/video/YOUR_VIDEO_ID" allowfullscreen></iframe>
+        ============================================================
+      -->
+
+      <div class="video-placeholder">
+        <div class="corner-marks"></div>
+        <div class="play"></div>
+        <p>Drop in your MP4 or embed code</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== RESULTS ============== -->
+<section id="results">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Results</h2>
+      </div>
+    </div>
+
+    <h3 class="sub-h" data-num="4.1">Effect of the Fusion Coefficient Ω_K</h3>
+    <div class="prose">
+      <p>The number of correctly triggered events was measured as Ω_K was varied (Figure 3). The detection rate rose as Ω_K increased from 0 toward 1, then plateaued. Above Ω_K = 1 there was no measurable gain in accuracy, so Ω_K = 1.0 was selected as the final operating value.</p>
+    </div>
+
+    <figure>
+      <img src="figure3.png" alt="Number of triggered events as a function of the fusion coefficient Ω_K" style="width:100%; height:auto; display:block;">
+      <figcaption><strong>Figure 3</strong>Number of triggered events as a function of the fusion coefficient Ω_K.</figcaption>
+    </figure>
+
+    <h3 class="sub-h" data-num="4.2">Effect of SNR on Triggering and Accuracy</h3>
+    <div class="prose">
+      <p>With Ω_K = 1.0 fixed, the system was evaluated against test recordings mixed to varying SNRs ranging from −1.5 dB to 9.2 dB. Figure 4 shows the number of events triggered as a function of SNR, and Figure 5 shows the corresponding correct-label rate (the fraction of triggers that matched the actual event).</p>
+    </div>
+
+    <figure>
+      <img src="figure4.png" alt="Number of triggered events per label as a function of SNR (dB)" style="width:100%; height:auto; display:block;">
+      <figcaption><strong>Figure 4</strong>Number of triggered events per label as a function of SNR (dB).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="figure5.png" alt="Accuracy per event as a function of SNR (dB)" style="width:100%; height:auto; display:block;">
+      <figcaption><strong>Figure 5</strong>Accuracy per event as a function of SNR (dB).</figcaption>
+    </figure>
+
+    <h3 class="sub-h" data-num="4.3">Headline Performance Numbers</h3>
+    <div class="prose">
+      <ul>
+        <li>With the two-stage denoising, the conditional detector boosts, and the exponential-saturation fusion enabled, the system produced event triggering down to −1.5 dB SNR, for which the stock YAMNet produced no triggers.</li>
+        <li>Across the tested SNR range, scoring fusion with Ω_K = 1.0 increased label accuracy by at least 75% relative to the same pipeline run without score fusion.</li>
+        <li>Averaged across all five labels, the system maintained above 50% label accuracy across all SNRs.</li>
+        <li>The &ldquo;Water Running&rdquo; event was the strongest performer, achieving 100% correct-label accuracy down to -1.5 dB SNR. This is because running water is extremely distinct from the other 4 event sounds. The final program had near a 100% accuracy in triggering events across all tested SNRs when one of the 5 event sounds were played, but accuracy in distinguishing between fire alarm, phone ringtone, microwave beep, and doorbell was around 50%. This is because all four of those sounds have significant overlap with each other. A loud microwave beep can be indistinguishable from a distant fire alarm, and a short phone ringtone might be the exact same tone as a doorbell. Even a human might have trouble classifying them when they don't align exactly with the stereotypical sounds we associate for each.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DISCUSSION ============== -->
+<section id="discussion">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Discussion</h2>
+      </div>
+    </div>
+
+    <h3 class="sub-h" data-num="5.1">Satisfaction of Project Aims</h3>
+    <div class="prose">
+      <p>All three project aims were met. 1) Hardware: produced two functional ESP32 microphone front ends with wireless data transfer and a visual display. 2) Software: produced a digital filtering and machine-learning pipeline that classifies the five target events. 3) Integration and Validation: produced a continuously running system whose accuracy was characterized over realistic SNR ranges and whose key parameters were tuned to operating points that balance accuracy and responsiveness.</p>
+    </div>
+
+    <h3 class="sub-h" data-num="5.2">Strengths and Limitations of the Approach</h3>
+    <div class="prose">
+      <p>The chief strength of the approach is that it decouples the hard problem (a robust audio embedding under noise) from a tractable problem (mapping that embedding onto a user-facing event vocabulary). The classical front end and auxiliary detectors do not attempt to outperform YAMNet; they pre-clean the input and patch its known weak spots, while the exponential-saturation fusion translates YAMNet's diffuse confidence into committed event decisions. This is also the central limitation: because YAMNet is treated as a frozen feature extractor, the system inherits YAMNet's failure modes on truly out-of-distribution sounds, and adding new events requires hand-curating the sub-label list rather than training.</p>
+
+      <p>Two further limitations are worth noting. First, the voice-band notch is a deliberate tradeoff: it improves performance in chatty rooms but slightly attenuates events whose fundamental energy lives inside the speech band, such as some doorbell tones. Second, the evaluation SNR floor (−1.5 dB) was set by the test recordings used; performance below that level was not directly characterized, and behavior in extreme low-SNR environments remains an open question.</p>
+    </div>
+
+    <h3 class="sub-h" data-num="5.3">Performance Tradeoffs</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Window length vs. responsiveness.</strong> Longer windows (10 s) improve accuracy on sustained sounds but blur short events and feel laggy. The chosen 5 s window with 0.5 s hops keeps perceived latency low while still averaging out short-term noise.</li>
+        <li><strong>Notch depth vs. event preservation.</strong> An 8 dB notch was empirically the deepest cut that did not begin to suppress alarm and ringtone harmonics in the same band.</li>
+        <li><strong>Saturation coefficient vs. false triggering.</strong> Increasing Ω_K beyond 1.0 produced no accuracy gain but did increase the rate at which weakly-supported events crossed the firing threshold; Ω_K = 1.0 sits at the elbow of the curve.</li>
+      </ul>
+    </div>
+
+    <h3 class="sub-h" data-num="5.4">Future Work</h3>
+    <div class="prose">
+      <ul>
+        <li><strong>Expanded event vocabulary:</strong> Adding events such as glass breaking, baby crying, and dog barking, all of which exist as YAMNet sub-labels and would require new aggregation lists.</li>
+        <li><strong>Per-user refinement:</strong> Allowing users to use their own personally relevant sounds (a specific ringtone, or a specific microwave beep) by training a small auxiliary ML model on a handful of recorded examples.</li>
+        <li><strong>Direction-of-arrival:</strong> Extending the front end to a microphone array of 4 or more to localize the source of each detected sound in 3D space and display that information.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============== CONCLUSIONS ============== -->
+<section id="conclusions">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">6</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Conclusions</h2>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The project demonstrates that careful audio pre-processing and category score fusion can vastly improve the accuracy a stock pretrained audio-classification model in noisy environments without retraining the model. This entire pipeline is achievable on inexpensive ESP32 hardware, with open-source resources, and with much room for customizability and user-specific refinement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== DELIVERABLES ============== -->
+<section id="deliverables">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">7</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Deliverables</h2>
+      </div>
+    </div>
+
+    <div class="twocol">
+      <div>
+        <h3 class="sub-h" data-num="7.1" style="margin-top:0;">Proposed Deliverables</h3>
+        <div class="prose">
+          <ul>
+            <li>A circuit capable of audio detection, wireless communication, and visual display.</li>
+            <li>A software program able to digitally filter noisy audio and classify a fixed list of sounds using a machine-learning model.</li>
+            <li>A final written report and a project webpage.</li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-h" data-num="7.2" style="margin-top:0;">Completed Deliverables</h3>
+        <div class="prose">
+          <ul>
+            <li>Two functional ESP32 microphone front ends with analog filtration, Wi-Fi data transfer, and a laptop GUI that displays the currently detected event.</li>
+            <li>A complete Python software pipeline (audio capture, spectral-gate suppression, voice-band notch, transience and harmonic-peak detectors, YAMNet inference, exponential-saturation event fusion, and multi-frame voting), all with tunable parameters.</li>
+            <li>This final written report and the accompanying project webpage.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== TEAM (Appendix B) ============== -->
+<section id="team">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">B</div>
+      <div class="section-title-block">
+        <div class="section-eyebrow">Appendix B</div>
+        <h2 class="section-title">Project Team</h2>
+      </div>
+    </div>
+
+    <div class="prose" style="max-width:780px;">
+      <p>Each member contributed across hardware, software, and documentation, with primary responsibilities as listed below.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-name">Shua Jeon</div>
+        <div class="team-degree">B.S. Electrical Engineering '26</div>
+        <p class="team-bio">Hardware design and integration, including the ESP32 microphone front-end circuits, analog filtration, and troubleshooting Wi-Fi data transfer.</p>
+        <a class="team-email" href="mailto:j.shua@wustl.edu">j.shua@wustl.edu</a>
+      </div>
+      <div class="team-card">
+        <div class="team-name">Kevin Gutierrez</div>
+        <div class="team-degree">B.S. Electrical Engineering '26</div>
+        <p class="team-bio">Led debugging of laptop-vs-ESP32 normalization differences and Wi-Fi stability. Developed GUI interface and exponential event fusion function.</p>
+        <a class="team-email" href="mailto:gutierrezvelasco@wustl.edu">gutierrezvelasco@wustl.edu</a>
+      </div>
+      <div class="team-card">
+        <div class="team-name">Keshav Vasanth</div>
+        <div class="team-degree">B.S. Electrical Engineering '26</div>
+        <p class="team-bio">Developed main program pipeline: incorporating YAMNet, de-noising functions, auxiliary classical detectors (spectral-flux transience and harmonic-peak detection), and the voting and cooldown logic. Took noise-environment characterization data and final program operation/accuracy data.</p>
+        <a class="team-email" href="mailto:k.vasanth@wustl.edu">k.vasanth@wustl.edu</a>
+      </div>
+    </div>
+
+    <div style="margin-top:48px;">
+      <div class="appendix-tag">Project Client</div>
+      <div class="prose">
+        <p>The project client and faculty instructor was Prof. Dorothy Wang. The client's role was to define the high-level scope and project motivations and provide weekly technical feedback. The project also builds directly on the ESE 3310 microphone-circuit laboratory developed by Prof. Wang, whose original analog front-end design was the starting point for the ESP32 microphone circuits.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== APPENDIX A — ABET ============== -->
+<section id="appendix">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">A</div>
+      <div class="section-title-block">
+        <div class="section-eyebrow">Appendix A</div>
+        <h2 class="section-title">Engineering Design Considerations (ABET)</h2>
+      </div>
+    </div>
+
+    <div class="appendix-block">
+      <div class="appendix-tag">A.1 — Relation to the BS EE Curriculum</div>
+      <div class="prose">
+        <p>The project relates to the core electrical-engineering curriculum in many ways. ESE 3310 (the microphone-circuit laboratory developed by Prof. Wang) directly provided the analog front-end starting point. Coursework in signals and systems, Fourier analysis, and digital signal processing supported the STFT-based spectral-gate suppressor, the voice-band notch filter, the spectral-flux transience detector, and the harmonic-peak detector. Embedded-systems coursework supported the ESP32 firmware, sampling, and wireless data-transfer pipeline.</p>
+      </div>
+    </div>
+
+    <div class="appendix-block">
+      <div class="appendix-tag">A.2 — Incorporation of Engineering Standards</div>
+      <div class="prose">
+        <ul>
+          <li>Software was developed in Python using standard scientific-computing libraries (NumPy, SciPy) and TensorFlow/TensorFlow Hub for YAMNet inference, all of which provided the standards for audio DSP and ML inference.</li>
+          <li>Audio is sampled at 16 kHz, the standard input rate expected by YAMNet and a common standard for speech-band acoustic processing.</li>
+          <li>Wi-Fi data transfer between the ESP32 boards and the host follows the IEEE 802.11 wireless standard (implemented natively by the ESP32).</li>
+          <li>The analog front-end design follows standard op-amp and circuit conventions (resistor/capacitor tolerance budgeting and single supply op-amp biasing).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="appendix-block">
+      <div class="appendix-tag">A.3 — Constraints Inherent in the Project</div>
+      <div class="prose">
+        <ul>
+          <li><strong>Functionality and quantitative specifications:</strong> The system had to operate continuously and in real time on the given hardware from ESE 3310, classify a fixed five-event vocabulary, and remain useful at low SNRs (with −1.5 dB being a realistic lower threshold).</li>
+          <li><strong>Cost:</strong> All components were chosen from the available supply in the Urbauer labs to keep the total cost under the capstone budget.</li>
+          <li><strong>Schedule:</strong> The 1 semester timeline bounded both the scope of the event vocabulary and the complexity of the hardware design.</li>
+          <li><strong>Accessibility and usability:</strong> Because the device is intended primarily for users with auditory disabilities, the visual display had to convey detected events unambiguously.</li>
+          <li><strong>Safety:</strong> Fire-alarm and water-running events are safety-relevant, so false negatives would be dangerous, which was the reasoning behind the relatively conservative voting and cooldown thresholds, and de-noising parameters.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== FOOTER ============== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-block">
+      <h4>ESE 4970 — Capstone Design Project</h4>
+      <p>Final Report submitted to the Department of Electrical and Systems Engineering. Project Period: January 2026 – May 2026.</p>
+    </div>
+    <div class="footer-block">
+      <h4>Group Members</h4>
+      <a href="mailto:j.shua@wustl.edu">Shua Jeon — j.shua@wustl.edu</a>
+      <a href="mailto:gutierrezvelasco@wustl.edu">Kevin Gutierrez — gutierrezvelasco@wustl.edu</a>
+      <a href="mailto:k.vasanth@wustl.edu">Keshav Vasanth — k.vasanth@wustl.edu</a>
+    </div>
+    <div class="footer-block">
+      <h4>Faculty Instructor &amp; Project Client</h4>
+      <a href="mailto:dorothyw@wustl.edu">Prof. Dorothy Wang — dorothyw@wustl.edu</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Project draws on the ESE 3310 microphone-circuit lab developed by Prof. Wang</span>
+    <span>Date of Submission: May 1, 2026</span>
+  </div>
+</footer>
+
+<script>
+  // Reveal-on-scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: "0px 0px -10% 0px" });
+  document.querySelectorAll('section .section-inner, .stats-inner, .demo-inner').forEach(el => {
+    el.classList.add('reveal');
+    io.observe(el);
+  });
+</script>
+
+</body>
+</html>
