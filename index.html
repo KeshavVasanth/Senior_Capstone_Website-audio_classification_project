@@ -324,6 +324,27 @@
     width: 14px; height: 1px;
     background: var(--alarm);
   }
+  .prose ol {
+    margin: 0 0 1.4em 0;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: ref-counter;
+  }
+  .prose ol li {
+    padding-left: 36px;
+    position: relative;
+    margin-bottom: 14px;
+    counter-increment: ref-counter;
+  }
+  .prose ol li::before {
+    content: "[" counter(ref-counter) "]";
+    position: absolute;
+    left: 0; top: 0;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--alarm);
+    font-weight: 500;
+  }
   .prose .lead {
     font-family: var(--font-display);
     font-size: 22px;
@@ -355,100 +376,18 @@
     max-width: 700px;
   }
 
-  /* Two-column for executive summary outcomes */
-  .twocol {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 56px;
-  }
-  @media (max-width: 820px) { .twocol { grid-template-columns: 1fr; gap: 32px; } }
-
-  /* ============ STAT CARDS ============ */
-  .stats-band {
-    background: var(--ink);
-    color: var(--paper);
-    border-bottom: 1px solid var(--rule);
-    padding: 80px 32px;
-  }
-  .stats-inner {
-    max-width: var(--maxw);
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-  }
-  .stat {
-    border-right: 1px solid rgba(242, 238, 227, 0.15);
-    padding: 0 28px;
-  }
-  .stat:last-child { border-right: none; }
-  .stat:first-child { padding-left: 0; }
-  .stat-num {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 5.8vw, 76px);
-    font-weight: 320;
-    line-height: 1;
-    letter-spacing: -0.03em;
-    margin-bottom: 16px;
-    font-variation-settings: "opsz" 144;
-  }
-  .stat-num .unit {
-    font-size: 0.5em;
-    color: var(--alarm);
-    font-style: italic;
-    margin-left: 4px;
-    font-weight: 380;
-  }
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(242, 238, 227, 0.65);
-    line-height: 1.55;
-  }
-  @media (max-width: 820px) {
-    .stats-inner { grid-template-columns: 1fr 1fr; gap: 40px 0; }
-    .stat { padding: 0 18px; }
-    .stat:nth-child(2) { border-right: none; }
-  }
-
-  /* ============ FIGURE PLACEHOLDER ============ */
-  figure.figure-placeholder {
+  /* ============ FIGURE (with image) ============ */
+  figure.figure-img {
     margin: 40px 0;
-    border: 1px dashed var(--ink-soft);
-    background:
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 8px,
-        rgba(14,14,12,0.025) 8px,
-        rgba(14,14,12,0.025) 16px
-      );
-    padding: 60px 28px;
     text-align: center;
   }
-  .placeholder-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--alarm);
-    margin-bottom: 12px;
-  }
-  .placeholder-title {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 18px;
-    color: var(--ink-soft);
-    max-width: 600px;
+  figure.figure-img img {
+    max-width: 100%;
+    height: auto;
+    display: block;
     margin: 0 auto;
-  }
-  .placeholder-hint {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--muted);
-    margin-top: 14px;
+    border: 1px solid var(--hairline);
+    background: var(--paper-2);
   }
   figure figcaption {
     font-family: var(--font-display);
@@ -457,6 +396,7 @@
     color: var(--muted);
     margin-top: 14px;
     line-height: 1.5;
+    text-align: center;
   }
   figure figcaption strong {
     font-style: normal;
@@ -470,13 +410,13 @@
   }
 
   /* ============ TABLE ============ */
-  .params-table {
+  .params-table, .schedule-table {
     width: 100%;
     border-collapse: collapse;
     margin: 32px 0 12px;
     font-size: 14.5px;
   }
-  .params-table caption {
+  .params-table caption, .schedule-table caption {
     font-family: var(--font-display);
     font-style: italic;
     font-size: 14.5px;
@@ -486,7 +426,7 @@
     caption-side: bottom;
     line-height: 1.5;
   }
-  .params-table caption strong {
+  .params-table caption strong, .schedule-table caption strong {
     font-style: normal;
     font-family: var(--font-mono);
     font-size: 11px;
@@ -496,24 +436,26 @@
     font-weight: 500;
     margin-right: 10px;
   }
-  .params-table thead {
+  .params-table thead, .schedule-table thead {
     background: var(--ink);
     color: var(--paper);
   }
-  .params-table th, .params-table td {
+  .params-table th, .params-table td,
+  .schedule-table th, .schedule-table td {
     padding: 14px 18px;
     text-align: left;
     border-bottom: 1px solid var(--hairline);
     vertical-align: top;
   }
-  .params-table th {
+  .params-table th, .schedule-table th {
     font-family: var(--font-mono);
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     font-weight: 500;
   }
-  .params-table tbody tr:hover { background: var(--paper-2); }
+  .params-table tbody tr:hover,
+  .schedule-table tbody tr:hover { background: var(--paper-2); }
   .params-table .param-name {
     font-family: var(--font-mono);
     font-weight: 500;
@@ -526,6 +468,22 @@
     font-weight: 500;
     width: 14%;
   }
+  .schedule-table .col-task { width: 60%; }
+  .schedule-table .col-date {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    width: 25%;
+  }
+  .schedule-table .col-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    width: 15%;
+  }
+  .schedule-table .status-ontime { color: var(--ink-soft); }
+  .schedule-table .status-delayed { color: var(--alarm); font-weight: 500; }
 
   /* ============ DEMO VIDEO SECTION ============ */
   .demo {
@@ -655,10 +613,11 @@
   .team-card:not(:first-child) { padding-left: 28px; }
   .team-name {
     font-family: var(--font-display);
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 460;
     letter-spacing: -0.01em;
     margin-bottom: 8px;
+    line-height: 1.15;
   }
   .team-degree {
     font-family: var(--font-mono);
@@ -680,6 +639,7 @@
     color: var(--muted);
     text-decoration: none;
     border-bottom: 1px solid transparent;
+    word-break: break-all;
   }
   .team-email:hover { color: var(--alarm); border-bottom-color: var(--alarm); }
   @media (max-width: 820px) {
@@ -769,12 +729,13 @@
       <span>ESE 4970 — Capstone Design Project</span>
     </div>
     <ul class="nav-links">
-      <li><a href="#summary">Executive Summary</a></li>
+      <li><a href="#summary">Summary</a></li>
       <li><a href="#background">Background</a></li>
       <li><a href="#methods">Methods</a></li>
-      <li><a href="#demo">Demonstration</a></li>
+      <li><a href="#demo">Demo</a></li>
       <li><a href="#results">Results</a></li>
       <li><a href="#discussion">Discussion</a></li>
+      <li><a href="#schedule">Schedule</a></li>
       <li><a href="#team">Team</a></li>
     </ul>
   </div>
@@ -793,7 +754,7 @@
     <div class="hero-meta-grid">
       <div class="hero-meta-cell">
         <div class="label">Group Members</div>
-        <div class="value">Shua Jeon · Kevin Gutierrez · Keshav Vasanth<small>B.S. Electrical Engineering '26<br/>Dept. of Electrical &amp; Systems Engineering</small></div>
+        <div class="value">Shua Jeon · Kevin Gutierrez Velasco · Keshav Vasanth<small>BS Electrical Engineering<br/>McKelvey School of Engineering</small></div>
       </div>
       <div class="hero-meta-cell">
         <div class="label">Faculty Instructor &amp; Project Client</div>
@@ -801,7 +762,7 @@
       </div>
       <div class="hero-meta-cell">
         <div class="label">Project Period</div>
-        <div class="value">January 2026 – May 2026</div>
+        <div class="value">February 2026 – April 2026</div>
       </div>
       <div class="hero-meta-cell">
         <div class="label">Date of Submission</div>
@@ -852,22 +813,12 @@
 
     <h3 class="sub-h" data-num="1.2">Aims and Objectives</h3>
     <div class="prose">
-      <ul>
-        <li>1) <strong>Hardware:</strong> Design and construct a circuit using two ESP32 microphones capable of wireless data transfer and connecting to a laptop for real-time visual display.</li>
-        <li>2) <strong>Software:</strong> Build a digital audio-processing and classification pipeline capable of cleaning noisy audio and classifying a set of five sound events (fire alarm, phone ringtone, microwave beep, doorbell, and water running).</li>
-        <li>3) <strong>Integration &amp; Validation:</strong> Integrate hardware and software into a continuously running system, test its accuracy across different levels of noisy environments, and tune operating parameters for the best accuracy and latency compromise.</li>
-      </ul>
+      <p>We aimed to design and construct a circuit using two ESP32 microphones capable of data transfer through WiFi to a Raspberry Pi. The data is then uploaded to a laptop for real-time visual display. Then we built a digital audio-processing and classification pipeline capable of cleaning noisy audio and classifying a set of five sound events: fire alarm, phone ringtone, microwave beep, doorbell, and water running. There is a major emphasis on Fire Alarms as they imply that a life-threatening situation may be occurring. Lastly, we integrate hardware and software into a continuously running system, test its accuracy across different levels of noisy environments, and tune operating parameters for the best accuracy and latency compromise.</p>
     </div>
 
     <h3 class="sub-h" data-num="1.3">Key Outcomes</h3>
     <div class="prose">
-      <ul>
-        <li>Made a real-time audio classifier running on two ESP32 microphone inputs, with a laptop GUI (graphical user interface).</li>
-        <li>A two-stage digital noise processing program (spectral-gate noise suppressor and voice-band notch filter), combined with transience and harmonic-peak detection, improved the SNR range over which YAMNet produced any event triggers to below −1.5 dB. The stock model only triggered events above an SNR of 10 dB.</li>
-        <li>Fusing the sub-labels outputted by YAMNet recovered a large fraction of the accuracy that it loses to room noise (after digital noise processing is done) without retraining the ML program. With a tuned saturation coefficient Ω_K, overall classification accuracy increased by at least 75% across every tested SNR value.</li>
-        <li>The system maintains above 50% average correct-label accuracy across all five labels and reaches 100% accuracy on the &ldquo;Water Running&rdquo; event down to -1.5 dB SNR.</li>
-        <li>This entire sound classification system is achievable on inexpensive ESP32 microphone hardware when the program's pipeline is carefully tuned.</li>
-      </ul>
+      <p>The final prototype is a real-time audio classifier running on two ESP32 microphone inputs, with a GUI (graphical user interface) that can be displayed on a personal computer. The created algorithm recovered a large fraction of the accuracy that it lost to room noise (after digital noise processing is done) without retraining the ML program (YAMNet). A tuned saturation coefficient Ω_K was found, and overall classification accuracy increased by at least 75% across every tested SNR value. The system maintains above 50% average correct-label accuracy across all five labels and reaches 100% accuracy on the &ldquo;Water Running&rdquo; event down to -1.5 dB SNR. The overall ESP32 microphone hardware is inexpensive and can be affordable as an actual product.</p>
     </div>
   </div>
 </section>
@@ -883,13 +834,13 @@
     </div>
 
     <div class="prose">
-      <p>Approximately 1 in 8 people in the United States have hearing loss in both ears, and many more experience temporary or situational hearing limitations (sleeping, wearing headphones, being in a different room of the home) [SOURCE]. Commercial products addressing this problem (such as visual smoke alarms, synced lighting throughout a house, app notifications, etc.) are usually device-specific, expensive, and difficult to install. A general-purpose sound classifier that operates on a small circuit, and wirelessly connects to a visual display (such as a laptop) would fill this gap.</p>
+      <p>Approximately 1 in 8 people in the United States have hearing loss in both ears, and many more experience temporary or situational hearing limitations (sleeping, wearing headphones, being in a different room of the home) [1]. Commercial products addressing this problem (such as visual smoke alarms, synced lighting throughout a house, app notifications, etc.) are usually device-specific, expensive, and difficult to install. A general-purpose sound classifier that operates on a small circuit, and wirelessly connects to a visual display (such as a laptop) would fill this gap.</p>
 
-      <p>This project also builds on the ESE 3310 microphone-circuit laboratory developed by Prof. Wang, redesigning the basic audio processing circuit into an integrated audio-visual interface that detects and classifies a fixed set of sounds across a wide range of auditory environments, and displays the resulting identification visually in real time.</p>
+      <p>This project also builds on the ESE 3310 microphone-circuit laboratory developed by Prof. Wang, redesigning the microphone (model CMA-6542PF) amplifier circuit into an integrated audio-visual interface that detects and classifies a fixed set of sounds across a wide range of auditory environments, and displays the resulting identification visually in real time [2].</p>
 
       <div class="callout">The contribution is not a new neural network, but rather an integrated hardware and software system in which audio pre-processing, conditional detections and boosts, and score fusion are combined to make a stock ML model usable in noisy real-world conditions.</div>
 
-      <p>YAMNet is an open-source audio classification model trained on 521 audio classes [SOURCE]. It was decided upon as the foundation of the audio classification program because of its broad classification capability, and the plethora of instructions, literature, and walkthroughs regarding its use that were available. The drawback of YAMNet is that it was trained on relatively isolated audio clips and massively underperforms in realistic noisy environments.</p>
+      <p>YAMNet is an open-source audio classification model trained on 521 audio classes [3]. It was decided upon as the foundation of the audio classification program because of its broad classification capability, and the plethora of instructions, literature, and walkthroughs regarding its use that were available.</p>
     </div>
   </div>
 </section>
@@ -906,11 +857,11 @@
 
     <h3 class="sub-h" data-num="3.1">System Overview</h3>
     <div class="prose">
-      <p>The complete system consists of two ESP32 microphone circuits with analog filtration and wireless data transfer to a laptop, and a software implementing the processing and classification pipeline shown in Figure 1.</p>
+      <p>The complete system consists of two ESP32 microphone circuits with analog filtration and wireless data transfer to a laptop, and software implementing the processing and classification pipeline shown in Figure 1.</p>
     </div>
 
-    <figure>
-      <img src="figure1.png" alt="Audio event processing pipeline" style="width:100%; height:auto; display:block;">
+    <figure class="figure-img">
+      <img src="figure-01-pipeline.png" alt="Audio event processing pipeline">
       <figcaption><strong>Figure 1</strong>Audio event processing pipeline.</figcaption>
     </figure>
 
@@ -918,7 +869,7 @@
     <div class="prose">
       <p><strong>Spectral Gate Noise Suppressor:</strong> This part of the system listens for steady, background sounds in the room, such as air conditioning, fans, and low hums, and turns them down. To do this, it uses a Short-Time Fourier Transform (STFT), where it divides the incoming audio into short slices and measures what frequencies are present in each slice. To determine what counts as noise, the program takes the quietest recent slices and classifies them as the room's baseline noise. It then creates a mask which lowers the magnitude of those frequencies rather than completely removing them. This prevents any potentially important audio from being removed entirely. Because the spectral profile of noise will differ between environments, the program continually updates its measuring and classification of baseline noise.</p>
 
-      <p><strong>Voice-Band Notch Filter:</strong> This second stage turns down the range of pitches human voices occupy, which is roughly 100 to 3,400 Hz [SOURCE]. The magnitude of reduction is capped at 8 dB deliberately so events such as doorbells and water running (which occasionally exist in this range as well) aren't fully cut-off. The frequency is capped at 3.4 kHz because alarms and ringtones contain a lot of high-pitched overtones above that threshold.</p>
+      <p><strong>Voice-Band Notch Filter:</strong> This second stage turns down the range of pitches human voices occupy, which is roughly 100 to 3,400 Hz. The magnitude of reduction is capped at 8 dB deliberately so events such as doorbells and water running (which occasionally exist in this range as well) aren't fully cut-off. The frequency is capped at 3.4 kHz because alarms and ringtones contain a lot of high-pitched overtones above that threshold.</p>
     </div>
 
     <h3 class="sub-h" data-num="3.3">Classifier and Auxiliary Detectors</h3>
@@ -932,13 +883,13 @@
 
     <h3 class="sub-h" data-num="3.4">Event Fusion and Scoring</h3>
     <div class="prose">
-      <p>Since YAMNet spreads its confidence across many output labels rather than committing to a single event, the five target events (fire alarm, phone ringtone, microwave beep, doorbell, and water running) are each defined by a list of related YAMNet sub-labels (e.g. &ldquo;water&rdquo;, &ldquo;faucet&rdquo;, &ldquo;drip&rdquo;, and &ldquo;shower&rdquo; all under the event &ldquo;water running&rdquo;). For each event, the matching sub-label scores are summed and put through an exponential-saturation function:</p>
+      <p>Since YAMNet spreads its confidence across many output labels rather than committing to a single event, the five target events (fire alarm, phone ringtone, microwave beep, doorbell, and water running) are each defined by a list of related YAMNet sub-labels (e.g. &ldquo;water&rdquo;, &ldquo;faucet&rdquo;, &ldquo;drip&rdquo;, and &ldquo;shower&rdquo; all under the event &ldquo;water running&rdquo;). For the event with the best confidence interval in one sample, the matching sub-label scores are summed and put through an exponential-saturation function:</p>
 
       <div class="callout"><em>Final_confidence = 1 − exp( −Ω_K · Σ sublabel_scores )</em></div>
 
-      <p>where Ω_K is a tunable coefficient that controls how strongly the sum of confidence values is compressed into the bounded interval (0, 1). The exponential form guarantees the final confidence value stays between 0 and 1 regardless of how many sub-labels fire. This category-aggregation step is the single most important addition for events where confidence is spread across several sub-labels, none of which individually clear the minimum score threshold, but together represent very strong evidence.</p>
+      <p>where Ω_K is the coefficient that controls how strongly the sum of confidence values support the claim of the top sound. The exponential form guarantees the final confidence value stays between 0 and 1 regardless of how high the confidence level gets. This equation is crucial for classification as it allows us to combine evidence without over exaggerating the overall confidence level.</p>
 
-      <p>An event is finally reported only after a multi-frame voting check is passed. At least VOTES_REQUIRED of the last VOTE_WINDOW inferences must agree. Every reported event has a minimum cooldown before it can be triggered again, and every per-event final vote must clear a minimum confidence threshold. The full set of tunable parameters and their final values is summarized in Table 1.</p>
+      <p>An event is finally reported only after a multi-frame voting check is passed. VOTES_REQUIRED is the number of times a specific sound needs to appear as number 1 in the last 10 samples before being declared as the confirmed sound being heard. Every reported event has a minimum cooldown before it can be triggered again. The full set of tunable parameters and their final values is summarized in Table 1.</p>
     </div>
 
     <table class="params-table">
@@ -959,32 +910,42 @@
 
     <h3 class="sub-h" data-num="3.5">Hardware Implementation</h3>
     <div class="prose">
-      <p>Two integrated ESP32 microphone circuits were built. Each board has an analog filtration network (op-amp-based gain and band shaping shown in Figure 2) ahead of the ESP32, which digitizes the signal and forwards it to laptop over Wi-Fi, which drives a GUI that displays the most recently detected event.</p>
+      <p>Two integrated ESP32 microphone circuits were built. Each board has an op-amp-based gain before sending signals to the ESP32, which transmits the signals to the Raspberry Pi over Wi-Fi. The Pi drives a GUI that displays the most recently detected event.</p>
     </div>
 
-    <figure>
-      <img src="figure2.png" alt="Physical filtration circuit diagram of one ESP32 microphone setup" style="width:100%; height:auto; display:block;">
-      <figcaption><strong>Figure 2</strong>Physical filtration circuit diagram of one ESP32 microphone setup.</figcaption>
+    <figure class="figure-img">
+      <img src="figure-02-circuit-diagram.png" alt="Circuit diagram of one ESP32 microphone setup">
+      <figcaption><strong>Figure 2</strong>Circuit diagram of one ESP32 microphone setup.</figcaption>
     </figure>
 
     <h3 class="sub-h" data-num="3.6">Development Cycle</h3>
     <div class="prose">
-      <ul>
-        <li><strong>Baseline:</strong> Stock YAMNet was run on raw 16 kHz microphone audio to establish a performance floor.</li>
-        <li><strong>Noise characterization:</strong> Recordings were collected in three representative environments: a library, a dorm kitchen, and a building hallway. These were used to profile realistic noise floors.</li>
-        <li><strong>Front-end filtering:</strong> The STFT-based spectral-gate suppressor was added for stationary noise, and the voice-band notch was added for chatter-based noise.</li>
-        <li><strong>Auxiliary detectors:</strong> Because YAMNet underweighted both very short transients and long tonal sounds, the spectral-flux transience detector and the harmonic peak detector were added.</li>
-        <li><strong>Hardware integration.</strong> The program was tested on the two integrated ESP32 microphone circuits, which revealed discrepancies in normalization and sensitivity between laptop and ESP32 microphone inputs.</li>
-        <li><strong>Fusion and tuning:</strong> Exponential-saturation scoring was implemented and Ω_K and SNR values were swept to choose final operating points.</li>
-      </ul>
+      <p>The work was divided into hardware and software. When developing software, YAMNet was analyzed to understand which of the initial parameters had to be changed in order to improve accuracy and decrease false positives. This includes personalization of VOTES_REQUIRED for specific sounds. For short burst sounds like a doorbell (and possibly phone ring) with long pauses in between, it would make sense for that number to be lower than the rest. Additionally, the spectral-flux transience detector and the harmonic peak detector was developed and implemented into the algorithm to help with these kinds of specific distinctions between sounds. Before the integration of software and hardware, all testing of the algorithm was done on a laptop to ensure time efficiency while the device was being developed. Testing was done in three different environments: a library, a dorm kitchen, and a building hallway. These were used to profile realistic noise floors.</p>
+
+      <p>The hardware development started with the lab microphone amplifier circuit from ESE 3310. First, we modified the microphone lab circuit from ESE 3310 so that the input from the microphone passes through an analog-to-digital converter to be processed on a Raspberry Pi.</p>
+    </div>
+
+    <figure class="figure-img">
+      <img src="figure-03-preamp-circuit.png" alt="Modified preamplifier circuit from Mic Lab">
+      <figcaption><strong>Figure 3</strong>Modified preamplifier circuit from Mic Lab [2].</figcaption>
+    </figure>
+
+    <div class="prose">
+      <p>There were several changes made to the circuit from the original lab circuit. Normally, sound inputs in the time domain are centered at 0 amplitude, but this will not work for our circuit. Because the Raspberry Pi will run on 3.3V, any voltage outside 0-3.3V will not be interpreted. Therefore, a voltage bias at 1.65V must be set, meaning the sound inputs are centered at 1.65V, and the circuit must limit voltage to hit maximums of 3.3V and 0V. The bias will be applied by changing R4 to 10K and voltage is lowered by implementing a voltage divider before feeding data to the MCP3008. The VCC was decreased to input 9V for future implementation of a 9V battery in PCB designs. In order to test this new circuit, we used an oscilloscope and Matlab to observe the output of the opamp through the MCP3008 circuit.</p>
+
+      <p>From auditory observation, it was clear that the USB mic had higher quality audio than the MCP3008 mic. Furthermore, the FFT of the output showed that the data using the ADC converter was limited to 2.4Khz. The audio recording limitations of the ADC converter circuit prevented any analysis of fire alarms and microwave sounds, which show peaks at 2Khz and 3Khz respectively. This is alarming because our circuit should have priority in detecting these signals. Because of this we explored other options for the microphone circuits.</p>
+
+      <p>Our second approach was the ESP32 microphone circuit. The ESP32 is advantageous because it has WiFi capabilities, which can be used in transferring audio data to the Raspberry Pi, and a built-in ADC. As shown in Figure 2, the microphone circuit is now attached to the ESP32 and not the Raspberry Pi. With this circuit design, we have the flexibility to collect audio data from multiple ESP32 units, which will transfer data to the Raspberry Pi. There were several changes to the circuit; first, because the ESP32 unit is powered by 3.3V, we powered all parts of the circuit with 3.3V. We removed the voltage divider and changed 9V to 3.3V.</p>
+
+      <p>We collected audio data from the ESP32 by compiling an algorithm through Arduino IDE that starts the ESP32 data collection on a specified WiFi port. We graph a sample of the data with a python file activated on the terminal. Data collection showed that the audio data sampled frequencies sufficient for the microwave and fire alarm signals. We used the ESP32 circuit moving forward in the project, and further along created another ESP32 unit and connection to a AA battery holder for portable use.</p>
     </div>
 
     <h3 class="sub-h" data-num="3.7">Initial Errors and Mitigations</h3>
     <div class="prose">
       <ul>
+        <li><strong>Hardware mismatch.</strong> The ESP32 circuits initially displayed incorrectly in the program because of inconsistent normalization and unstable Wi-Fi connections through the institution network. Both were eventually rectified. The ESP's can only handle audio processing at 10 kHz which requires the algorithm to resample the processed audio to be able to insert into YAMNet. Before integration of software and hardware, the algorithm was developed based on the microphone from a personal computer which comes with a high-end microphone compared to the one from the device. Consequently, initial testing resulted in making multiple changes to the algorithm to account for the microphone and ESP shortcomings. This includes, resampling and averaging to cleanup the audio signal being received.</li>
         <li><strong>Noise-floor drift:</strong> A fixed noise estimate failed when the device was moved between environments (especially from library to the kitchen). The fix was a rolling percentile-based estimate.</li>
         <li><strong>Latency vs. accuracy.</strong> A 10-second analysis window gave the best accuracy but felt too unresponsive. A 5-second window with overlapping 0.5-second loops was chosen as the final compromise.</li>
-        <li><strong>Hardware mismatch.</strong> The ESP32 circuits initially displayed incorrectly in the program because of inconsistent normalization and unstable Wi-Fi connections. Both were eventually rectified.</li>
       </ul>
     </div>
   </div>
@@ -993,7 +954,7 @@
 <!-- ============== DEMO VIDEO ============== -->
 <section id="demo" class="demo">
   <div class="demo-inner">
-    <h2>A real-time audio classifier running on two ESP32 microphone inputs, with a laptop GUI.</h2>
+    <h2>A real-time audio classifier running on two ESP32 microphone inputs, with a GUI that can be displayed on a personal computer.</h2>
 
     <div class="video-frame">
       <!--
@@ -1009,7 +970,7 @@
           Your browser does not support the video tag.
         </video>
 
-        OPTION B · YOUTUBE
+        OPTION B · YOUTUBE (recommended — upload to YouTube as Unlisted)
         Replace the placeholder block with:
 
         <iframe
@@ -1043,32 +1004,46 @@
       </div>
     </div>
 
-    <h3 class="sub-h" data-num="4.1">Effect of the Fusion Coefficient Ω_K</h3>
+    <h3 class="sub-h" data-num="4.1">Expected vs. Actual Audio Plots</h3>
     <div class="prose">
-      <p>The number of correctly triggered events was measured as Ω_K was varied (Figure 3). The detection rate rose as Ω_K increased from 0 toward 1, then plateaued. Above Ω_K = 1 there was no measurable gain in accuracy, so Ω_K = 1.0 was selected as the final operating value.</p>
+      <p>As mentioned previously, initial testing on the algorithm was done on a computer that used a high-end microphone with better capabilities. Therefore, when analyzing the 5 sounds to be detected, the patterns and distinctions that could be seen from the audio plots were not as clear when seen through the ESP-32 and lab circuit.</p>
     </div>
 
-    <figure>
-      <img src="figure3.png" alt="Number of triggered events as a function of the fusion coefficient Ω_K" style="width:100%; height:auto; display:block;">
-      <figcaption><strong>Figure 3</strong>Accuracy of triggered events as a function of the fusion coefficient Ω_K.</figcaption>
+    <figure class="figure-img">
+      <img src="figure-08-microwave-comparison.png" alt="Waveform and FFT of the microwave audio recorded on the laptop and prototype">
+      <figcaption><strong>Figure 8</strong>Waveform and FFT of the microwave audio recorded on the laptop (left) and prototype (right).</figcaption>
     </figure>
 
-    <h3 class="sub-h" data-num="4.2">Effect of SNR on Triggering and Accuracy</h3>
     <div class="prose">
-      <p>With Ω_K = 1.0 fixed, the system was evaluated against test recordings mixed to varying SNRs ranging from −1.5 dB to 9.2 dB. Figure 4 shows the number of events triggered as a function of SNR, and Figure 5 shows the corresponding correct-label rate (the fraction of triggers that matched the actual event).</p>
+      <p>As seen in Figure 8, the microwave audio has two clear distinctions, which include the small bursts of rings and its high concentration of amplitude around 2 kHz. When the same audio is analyzed through the prototype in Figure 9, the bursts of waves aren't as clear and the concentration of amplitudes in frequency is not at 2 kHz anymore. These kinds of changes required the algorithm to be adjusted as filter ranges were placed on certain sounds to reduce noise. On top of this, there were certain checks that were implemented to prevent the misidentification of fire alarms with microwaves and vice versa, which also needed to be adjusted due to the changes.</p>
     </div>
 
-    <figure>
-      <img src="figure4.png" alt="Number of triggered events per label as a function of SNR (dB)" style="width:100%; height:auto; display:block;">
-      <figcaption><strong>Figure 4</strong>Number of triggered events per label as a function of SNR (dB).</figcaption>
+    <h3 class="sub-h" data-num="4.2">Effect of the Fusion Coefficient Ω_K</h3>
+    <div class="prose">
+      <p>The number of correctly triggered events was measured as Ω_K was varied (Figure 10). The detection rate rose as Ω_K increased from 0 toward 1, then plateaued. Above Ω_K = 1 there was no measurable gain in accuracy, so Ω_K = 1.0 was selected as the final operating value.</p>
+    </div>
+
+    <figure class="figure-img">
+      <img src="figure-10-omega-k.png" alt="Number of triggered events as a function of the fusion coefficient Omega_K">
+      <figcaption><strong>Figure 10</strong>Number of triggered events as a function of the fusion coefficient Ω_K.</figcaption>
     </figure>
 
-    <figure>
-      <img src="figure5.png" alt="Accuracy per event as a function of SNR (dB)" style="width:100%; height:auto; display:block;">
-      <figcaption><strong>Figure 5</strong>Accuracy per event as a function of SNR (dB).</figcaption>
+    <h3 class="sub-h" data-num="4.3">Effect of SNR on Triggering and Accuracy</h3>
+    <div class="prose">
+      <p>With Ω_K = 1.0 fixed, the system was evaluated against test recordings mixed to varying SNRs ranging from −1.5 dB to 9.2 dB. Figure 11 shows the number of events triggered as a function of SNR, and Figure 12 shows the corresponding correct-label rate (the fraction of triggers that matched the actual event).</p>
+    </div>
+
+    <figure class="figure-img">
+      <img src="figure-11-snr-triggers.png" alt="Number of triggered events per label as a function of SNR">
+      <figcaption><strong>Figure 11</strong>Number of triggered events per label as a function of SNR (dB).</figcaption>
     </figure>
 
-    <h3 class="sub-h" data-num="4.3">Headline Performance Numbers</h3>
+    <figure class="figure-img">
+      <img src="figure-12-snr-accuracy.png" alt="Accuracy per event as a function of SNR">
+      <figcaption><strong>Figure 12</strong>Accuracy per event as a function of SNR (dB).</figcaption>
+    </figure>
+
+    <h3 class="sub-h" data-num="4.4">Headline Performance Numbers</h3>
     <div class="prose">
       <ul>
         <li>With the two-stage denoising, the conditional detector boosts, and the exponential-saturation fusion enabled, the system produced event triggering down to −1.5 dB SNR, for which the stock YAMNet produced no triggers.</li>
@@ -1077,6 +1052,16 @@
         <li>The &ldquo;Water Running&rdquo; event was the strongest performer, achieving 100% correct-label accuracy down to -1.5 dB SNR. This is because running water is extremely distinct from the other 4 event sounds. The final program had near a 100% accuracy in triggering events across all tested SNRs when one of the 5 event sounds were played, but accuracy in distinguishing between fire alarm, phone ringtone, microwave beep, and doorbell was around 50%. This is because all four of those sounds have significant overlap with each other. A loud microwave beep can be indistinguishable from a distant fire alarm, and a short phone ringtone might be the exact same tone as a doorbell. Even a human might have trouble classifying them when they don't align exactly with the stereotypical sounds we associate for each.</li>
       </ul>
     </div>
+
+    <h3 class="sub-h" data-num="4.5">GUI Implementation</h3>
+    <div class="prose">
+      <p>A Flask website was made for the Raspberry Pi to upload the information to so a computer could use its IP address to access this information and display on the webpage. The GUI would display the necessary information, including: The heard sound, confidence value, the current time, and which microphone detected the sound.</p>
+    </div>
+
+    <figure class="figure-img">
+      <img src="figure-13-gui-display.png" alt="Example display of GUI when sound is detected vs. no sound detected">
+      <figcaption><strong>Figure 13</strong>Example display of GUI when sound is detected vs. no sound detected.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -1097,27 +1082,17 @@
 
     <h3 class="sub-h" data-num="5.2">Strengths and Limitations of the Approach</h3>
     <div class="prose">
-      <p>The chief strength of the approach is that it decouples the hard problem (a robust audio embedding under noise) from a tractable problem (mapping that embedding onto a user-facing event vocabulary). The classical front end and auxiliary detectors do not attempt to outperform YAMNet; they pre-clean the input and patch its known weak spots, while the exponential-saturation fusion translates YAMNet's diffuse confidence into committed event decisions. This is also the central limitation: because YAMNet is treated as a frozen feature extractor, the system inherits YAMNet's failure modes on truly out-of-distribution sounds, and adding new events requires hand-curating the sub-label list rather than training.</p>
-
-      <p>Two further limitations are worth noting. First, the voice-band notch is a deliberate tradeoff: it improves performance in chatty rooms but slightly attenuates events whose fundamental energy lives inside the speech band, such as some doorbell tones. Second, the evaluation SNR floor (−1.5 dB) was set by the test recordings used; performance below that level was not directly characterized, and behavior in extreme low-SNR environments remains an open question.</p>
+      <p>The ESP32 circuits and auxiliary detectors do not attempt to outperform YAMNet, they instead pre-clean the input and cover its weak spots, while the label fusion turns YAMNet's diffuse confidence into higher accuracy event decisions. The voice-band notch is a deliberate tradeoff. It improves performance in chatty rooms but slightly attenuates events whose spectral signature exists inside the speech band, such as some doorbell tones. The lowest SNR value (−1.5 dB) was set by the test recordings used, and performance below that level was not directly characterized.</p>
     </div>
 
     <h3 class="sub-h" data-num="5.3">Performance Tradeoffs</h3>
     <div class="prose">
-      <ul>
-        <li><strong>Window length vs. responsiveness.</strong> Longer windows (10 s) improve accuracy on sustained sounds but blur short events and feel laggy. The chosen 5 s window with 0.5 s hops keeps perceived latency low while still averaging out short-term noise.</li>
-        <li><strong>Notch depth vs. event preservation.</strong> An 8 dB notch was empirically the deepest cut that did not begin to suppress alarm and ringtone harmonics in the same band.</li>
-        <li><strong>Saturation coefficient vs. false triggering.</strong> Increasing Ω_K beyond 1.0 produced no accuracy gain but did increase the rate at which weakly-supported events crossed the firing threshold; Ω_K = 1.0 sits at the elbow of the curve.</li>
-      </ul>
+      <p>There were several performance tradeoffs that needed to be evaluated. Longer windows (10 s) improve accuracy on sustained sounds but can leave short events from triggering while being laggy. The chosen 5 s window with 0.5 s loops keeps latency low while still averaging out short-term noise. Additionally, 8 dB notch was empirically the biggest reduction that didn't noticeably suppress alarm and ringtone sounds in the same band. Finally, increasing Ω_K beyond 1.0 produced no accuracy gain but did increase the rate at which weakly-supported events crossed the firing threshold.</p>
     </div>
 
     <h3 class="sub-h" data-num="5.4">Future Work</h3>
     <div class="prose">
-      <ul>
-        <li><strong>Expanded event vocabulary:</strong> Adding events such as glass breaking, baby crying, and dog barking, all of which exist as YAMNet sub-labels and would require new aggregation lists.</li>
-        <li><strong>Per-user refinement:</strong> Allowing users to use their own personally relevant sounds (a specific ringtone, or a specific microwave beep) by training a small auxiliary ML model on a handful of recorded examples.</li>
-        <li><strong>Direction-of-arrival:</strong> Extending the front end to a microphone array of 4 or more to localize the source of each detected sound in 3D space and display that information.</li>
-      </ul>
+      <p>Adding events such as glass breaking, baby crying, and dog barking, all of which exist as YAMNet sub-labels and would require new aggregation lists. Having more events to look out for can prove useful to the user based on their needs and preferences. It would also be useful to allow users to use their own personally relevant sounds (a specific ringtone, or a specific microwave beep) by training a small auxiliary ML model on a handful of recorded examples. Having more microphones at their disposal would also secure their area better, which is also a potential addition to the device.</p>
     </div>
   </div>
 </section>
@@ -1133,7 +1108,7 @@
     </div>
 
     <div class="prose">
-      <p>The project demonstrates that careful audio pre-processing and category score fusion can vastly improve the accuracy a stock pretrained audio-classification model in noisy environments without retraining the model. This entire pipeline is achievable on inexpensive ESP32 hardware, with open-source resources, and with much room for customizability and user-specific refinement.</p>
+      <p>The project demonstrates that careful audio pre-processing and category score fusion can vastly improve the accuracy of a stock pretrained audio-classification model in noisy environments without retraining the model. This entire pipeline is achievable on inexpensive ESP32 hardware, with open-source resources, and with much room for customizability and user-specific refinement.</p>
     </div>
   </div>
 </section>
@@ -1148,28 +1123,51 @@
       </div>
     </div>
 
-    <div class="twocol">
-      <div>
-        <h3 class="sub-h" data-num="7.1" style="margin-top:0;">Proposed Deliverables</h3>
-        <div class="prose">
-          <ul>
-            <li>A circuit capable of audio detection, wireless communication, and visual display.</li>
-            <li>A software program able to digitally filter noisy audio and classify a fixed list of sounds using a machine-learning model.</li>
-            <li>A final written report and a project webpage.</li>
-          </ul>
-        </div>
-      </div>
-      <div>
-        <h3 class="sub-h" data-num="7.2" style="margin-top:0;">Completed Deliverables</h3>
-        <div class="prose">
-          <ul>
-            <li>Two functional ESP32 microphone front ends with analog filtration, Wi-Fi data transfer, and a laptop GUI that displays the currently detected event.</li>
-            <li>A complete Python software pipeline (audio capture, spectral-gate suppression, voice-band notch, transience and harmonic-peak detectors, YAMNet inference, exponential-saturation event fusion, and multi-frame voting), all with tunable parameters.</li>
-            <li>This final written report and the accompanying project webpage.</li>
-          </ul>
-        </div>
+    <h3 class="sub-h" data-num="7.1/2" style="margin-top:0;">Proposed and Completed Deliverables</h3>
+    <div class="prose">
+      <p>The final design includes two functional ESP32 microphone front ends with analog filtration, Wi-Fi data transfer, and a laptop GUI that displays the currently detected event. A complete Python software pipeline was designed and implemented with tunable parameters based on specific environments. The software program is able to digitally filter noisy audio and classify a fixed list of sounds using a machine-learning model. A circuit capable of audio detection, wireless communication, and visual display was developed and tested. Finally, this report was made, and a project webpage was uploaded.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============== SCHEDULE & TIMELINE ============== -->
+<section id="schedule">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">8</div>
+      <div class="section-title-block">
+        <h2 class="section-title">Schedule and Timeline</h2>
       </div>
     </div>
+
+    <div class="prose">
+      <p>The project was conducted from February–April 2026. Table 2 lists the originally planned milestones and the team's adherence to them. Per-member responsibilities are detailed in Appendix B.</p>
+    </div>
+
+    <table class="schedule-table">
+      <caption><strong>Table 2</strong>Project schedule, planned completion dates, and adherence.</caption>
+      <thead>
+        <tr><th class="col-task">Tasks</th><th class="col-date">Planned Date</th><th class="col-status">Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Preliminary Research</td><td class="col-date">01/12 – 01/26</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>One Page Proposal</td><td class="col-date">01/19 – 01/23</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>ESE 3310 Lab testing</td><td class="col-date">01/22 – 01/24</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Drafting Hardware and Software Design</td><td class="col-date">01/26 – 01/29</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>ML Model Implementation</td><td class="col-date">01/27 – 02/04</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Basic GUI Creation</td><td class="col-date">01/28 – 01/31</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Raspberry Pi Testing</td><td class="col-date">01/28 – 02/11</td><td class="col-status status-delayed">Delayed</td></tr>
+        <tr><td>Create Full Proposal</td><td class="col-date">02/02 – 02/06</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Test First Hardware Design</td><td class="col-date">02/09 – 02/13</td><td class="col-status status-delayed">Delayed</td></tr>
+        <tr><td>Debug and Implementations to ML Model</td><td class="col-date">02/09 – 02/18</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Connect Hardware with Software</td><td class="col-date">02/23 – 02/27</td><td class="col-status status-delayed">Delayed</td></tr>
+        <tr><td>Test First Prototype</td><td class="col-date">03/02 – 03/09</td><td class="col-status status-delayed">Delayed</td></tr>
+        <tr><td>Fixes and Debugging</td><td class="col-date">03/16 – 03/20</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Additions and Experimenting</td><td class="col-date">03/23 – 04/08</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Final Testing and Debugging</td><td class="col-date">04/10 – 04/24</td><td class="col-status status-ontime">On Time</td></tr>
+        <tr><td>Final Report</td><td class="col-date">04/15 – 04/24</td><td class="col-status status-ontime">On Time</td></tr>
+      </tbody>
+    </table>
   </div>
 </section>
 
@@ -1191,20 +1189,20 @@
     <div class="team-grid">
       <div class="team-card">
         <div class="team-name">Shua Jeon</div>
-        <div class="team-degree">B.S. Electrical Engineering '26</div>
+        <div class="team-degree">BS Electrical Engineering</div>
         <p class="team-bio">Hardware design and integration, including the ESP32 microphone front-end circuits, analog filtration, and troubleshooting Wi-Fi data transfer.</p>
         <a class="team-email" href="mailto:j.shua@wustl.edu">j.shua@wustl.edu</a>
       </div>
       <div class="team-card">
-        <div class="team-name">Kevin Gutierrez</div>
-        <div class="team-degree">B.S. Electrical Engineering '26</div>
-        <p class="team-bio">Led debugging of laptop-vs-ESP32 normalization differences and Wi-Fi stability. Developed GUI interface and exponential event fusion function.</p>
+        <div class="team-name">Kevin Gutierrez Velasco</div>
+        <div class="team-degree">BS Electrical Engineering</div>
+        <p class="team-bio">Led debugging of laptop-vs-ESP32 normalization differences and Wi-Fi stability. Researched resampling strategies as well as filters for denoising. Developed a GUI interface and an exponential event fusion function.</p>
         <a class="team-email" href="mailto:gutierrezvelasco@wustl.edu">gutierrezvelasco@wustl.edu</a>
       </div>
       <div class="team-card">
         <div class="team-name">Keshav Vasanth</div>
-        <div class="team-degree">B.S. Electrical Engineering '26</div>
-        <p class="team-bio">Developed main program pipeline: incorporating YAMNet, de-noising functions, auxiliary classical detectors (spectral-flux transience and harmonic-peak detection), and the voting and cooldown logic. Took noise-environment characterization data and final program operation/accuracy data.</p>
+        <div class="team-degree">BS Electrical Engineering</div>
+        <p class="team-bio">Developed and iteratively refined main program pipeline: incorporating YAMNet, de-noising functions, auxiliary classical detectors (spectral-flux transience and harmonic-peak detection), and the voting and cooldown logic. Recorded noise-environment characterization data and final program operation/accuracy data.</p>
         <a class="team-email" href="mailto:k.vasanth@wustl.edu">k.vasanth@wustl.edu</a>
       </div>
     </div>
@@ -1219,7 +1217,7 @@
 </section>
 
 <!-- ============== APPENDIX A — ABET ============== -->
-<section id="appendix">
+<section id="appendix-a">
   <div class="section-inner">
     <div class="section-head">
       <div class="section-num">A</div>
@@ -1239,26 +1237,38 @@
     <div class="appendix-block">
       <div class="appendix-tag">A.2 — Incorporation of Engineering Standards</div>
       <div class="prose">
-        <ul>
-          <li>Software was developed in Python using standard scientific-computing libraries (NumPy, SciPy) and TensorFlow/TensorFlow Hub for YAMNet inference, all of which provided the standards for audio DSP and ML inference.</li>
-          <li>Audio is sampled at 16 kHz, the standard input rate expected by YAMNet and a common standard for speech-band acoustic processing.</li>
-          <li>Wi-Fi data transfer between the ESP32 boards and the host follows the IEEE 802.11 wireless standard (implemented natively by the ESP32).</li>
-          <li>The analog front-end design follows standard op-amp and circuit conventions (resistor/capacitor tolerance budgeting and single supply op-amp biasing).</li>
-        </ul>
+        <p>The Software was developed in Python using standard scientific-computing libraries (NumPy, SciPy) and TensorFlow/TensorFlow Hub for YAMNet inference, all of which provided the standards for audio DSP and ML inference. Audio was sampled at 16 kHz, which is the standard input rate expected by YAMNet and a common standard for speech-band acoustic processing. Wi-Fi data transfer between the ESP32 boards and the host follows the IEEE 802.11 wireless standard (implemented natively by the ESP32).</p>
       </div>
     </div>
 
     <div class="appendix-block">
       <div class="appendix-tag">A.3 — Constraints Inherent in the Project</div>
       <div class="prose">
-        <ul>
-          <li><strong>Functionality and quantitative specifications:</strong> The system had to operate continuously and in real time on the given hardware from ESE 3310, classify a fixed five-event vocabulary, and remain useful at low SNRs (with −1.5 dB being a realistic lower threshold).</li>
-          <li><strong>Cost:</strong> All components were chosen from the available supply in the Urbauer labs to keep the total cost under the capstone budget.</li>
-          <li><strong>Schedule:</strong> The 1 semester timeline bounded both the scope of the event vocabulary and the complexity of the hardware design.</li>
-          <li><strong>Accessibility and usability:</strong> Because the device is intended primarily for users with auditory disabilities, the visual display had to convey detected events unambiguously.</li>
-          <li><strong>Safety:</strong> Fire-alarm and water-running events are safety-relevant, so false negatives would be dangerous, which was the reasoning behind the relatively conservative voting and cooldown thresholds, and de-noising parameters.</li>
-        </ul>
+        <p>The system had to operate continuously and in real time on the given hardware from ESE 3310, classify a fixed five-event vocabulary, and remain useful at low SNRs, or in other words, in noisy environments. All components were chosen from the available supply in the Urbauer labs to keep the total cost under the capstone budget. The 1-semester timeline bounded both the scope of the event vocabulary and the complexity of the hardware design. Since the device is intended primarily for users with auditory disabilities, the visual display had to convey detected events unambiguously. Fire-alarm and water-running events are safety-relevant, so false negatives would be dangerous, which was the reasoning behind the relatively conservative voting and cooldown thresholds, and de-noising parameters.</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============== APPENDIX C — REFERENCES ============== -->
+<section id="appendix-c">
+  <div class="section-inner">
+    <div class="section-head">
+      <div class="section-num">C</div>
+      <div class="section-title-block">
+        <div class="section-eyebrow">Appendix C</div>
+        <h2 class="section-title">References</h2>
+      </div>
+    </div>
+
+    <div class="prose">
+      <ol>
+        <li>Lin, Harrison W et al. &ldquo;Self-reported Hearing Difficulty and Risk of Accidental Injury in US Adults, 2007 to 2015.&rdquo; <em>JAMA otolaryngology — head &amp; neck surgery</em> vol. 144, 5 (2018) [Online]: 413–417. doi:10.1001/jamaoto.2018.0039.</li>
+        <li>WashU (2026). <em>ESE 3310 Electronics Laboratory.</em></li>
+        <li>TensorFlow, &ldquo;Transfer learning with YAMNet for environmental sound classification,&rdquo; <em>TensorFlow Tutorials</em>, Aug. 16, 2024.</li>
+        <li>Google, &ldquo;YAMNet (AudioSet) model card,&rdquo; <em>Kaggle Models.</em></li>
+        <li>TensorFlow, &ldquo;YAMNet README,&rdquo; <em>tensorflow/models.</em></li>
+      </ol>
     </div>
   </div>
 </section>
@@ -1268,12 +1278,12 @@
   <div class="footer-inner">
     <div class="footer-block">
       <h4>ESE 4970 — Capstone Design Project</h4>
-      <p>Final Report submitted to the Department of Electrical and Systems Engineering. Project Period: January 2026 – May 2026.</p>
+      <p>Final Report submitted to the Department of Electrical and Systems Engineering. Project Period: February 2026 – April 2026.</p>
     </div>
     <div class="footer-block">
       <h4>Group Members</h4>
       <a href="mailto:j.shua@wustl.edu">Shua Jeon — j.shua@wustl.edu</a>
-      <a href="mailto:gutierrezvelasco@wustl.edu">Kevin Gutierrez — gutierrezvelasco@wustl.edu</a>
+      <a href="mailto:gutierrezvelasco@wustl.edu">Kevin Gutierrez Velasco — gutierrezvelasco@wustl.edu</a>
       <a href="mailto:k.vasanth@wustl.edu">Keshav Vasanth — k.vasanth@wustl.edu</a>
     </div>
     <div class="footer-block">
@@ -1297,7 +1307,7 @@
       }
     });
   }, { threshold: 0.08, rootMargin: "0px 0px -10% 0px" });
-  document.querySelectorAll('section .section-inner, .stats-inner, .demo-inner').forEach(el => {
+  document.querySelectorAll('section .section-inner, .demo-inner').forEach(el => {
     el.classList.add('reveal');
     io.observe(el);
   });
