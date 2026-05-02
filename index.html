@@ -984,36 +984,36 @@
 
     <figure class="figure-img">
       <img src="figure-08-microwave-comparison.png" alt="Waveform and FFT of the microwave audio recorded on the laptop and prototype">
-      <figcaption><strong>Figure 8</strong>Waveform and FFT of the microwave audio recorded on the laptop (left) and prototype (right).</figcaption>
+      <figcaption><strong>Figure 4</strong>Waveform and FFT of the microwave audio recorded on the laptop (left) and prototype (right).</figcaption>
     </figure>
 
     <div class="prose">
-      <p>As seen in Figure 8, the microwave audio has two clear distinctions, which include the small bursts of rings and its high concentration of amplitude around 2 kHz. When the same audio is analyzed through the prototype in Figure 9, the bursts of waves aren't as clear and the concentration of amplitudes in frequency is not at 2 kHz anymore. These kinds of changes required the algorithm to be adjusted as filter ranges were placed on certain sounds to reduce noise. On top of this, there were certain checks that were implemented to prevent the misidentification of fire alarms with microwaves and vice versa, which also needed to be adjusted due to the changes.</p>
+      <p>As seen in Figure 4, the microwave audio has two clear distinctions, which include the small bursts of rings and its high concentration of amplitude around 2 kHz. When the same audio is analyzed through the prototype in Figure 9, the bursts of waves aren't as clear and the concentration of amplitudes in frequency is not at 2 kHz anymore. These kinds of changes required the algorithm to be adjusted as filter ranges were placed on certain sounds to reduce noise. On top of this, there were certain checks that were implemented to prevent the misidentification of fire alarms with microwaves and vice versa, which also needed to be adjusted due to the changes.</p>
     </div>
 
     <h3 class="sub-h" data-num="4.2">Effect of the Fusion Coefficient Ω_K</h3>
     <div class="prose">
-      <p>The number of correctly triggered events was measured as Ω_K was varied (Figure 10). The detection rate rose as Ω_K increased from 0 toward 1, then plateaued. Above Ω_K = 1 there was no measurable gain in accuracy, so Ω_K = 1.0 was selected as the final operating value.</p>
+      <p>The number of correctly triggered events was measured as Ω_K was varied (Figure 5). The detection rate rose as Ω_K increased from 0 toward 1, then plateaued. Above Ω_K = 1 there was no measurable gain in accuracy, so Ω_K = 1.0 was selected as the final operating value.</p>
     </div>
 
     <figure class="figure-img">
       <img src="figure-10-omega-k.png" alt="Accuracy of triggered events as a function of the fusion coefficient Omega_K">
-      <figcaption><strong>Figure 10</strong>Accuracy of triggered events as a function of the fusion coefficient Ω_K.</figcaption>
+      <figcaption><strong>Figure 5</strong>Accuracy of triggered events as a function of the fusion coefficient Ω_K.</figcaption>
     </figure>
 
     <h3 class="sub-h" data-num="4.3">Effect of SNR on Triggering and Accuracy</h3>
     <div class="prose">
-      <p>With Ω_K = 1.0 fixed, the system was evaluated against test recordings mixed to varying SNRs ranging from −1.5 dB to 9.2 dB. Figure 11 shows the number of events triggered as a function of SNR, and Figure 12 shows the corresponding correct-label rate (the fraction of triggers that matched the actual event).</p>
+      <p>With Ω_K = 1.0 fixed, the system was evaluated against test recordings mixed to varying SNRs ranging from −1.5 dB to 9.2 dB. Figure 11 shows the number of events triggered as a function of SNR, and Figure 7 shows the corresponding correct-label rate (the fraction of triggers that matched the actual event).</p>
     </div>
 
     <figure class="figure-img">
       <img src="figure-11-snr-triggers.png" alt="Number of triggered events per label as a function of SNR">
-      <figcaption><strong>Figure 11</strong>Number of triggered events per label as a function of SNR (dB).</figcaption>
+      <figcaption><strong>Figure 6</strong>Number of triggered events per label as a function of SNR (dB).</figcaption>
     </figure>
 
     <figure class="figure-img">
       <img src="figure-12-snr-accuracy.png" alt="Accuracy per event as a function of SNR">
-      <figcaption><strong>Figure 12</strong>Accuracy per event as a function of SNR (dB).</figcaption>
+      <figcaption><strong>Figure 7</strong>Accuracy per event as a function of SNR (dB).</figcaption>
     </figure>
 
     <h3 class="sub-h" data-num="4.4">Headline Performance Numbers</h3>
@@ -1033,7 +1033,7 @@
 
     <figure class="figure-img">
       <img src="figure-13-gui-display.png" alt="Example display of GUI when sound is detected vs. no sound detected">
-      <figcaption><strong>Figure 13</strong>Example display of GUI when sound is detected vs. no sound detected.</figcaption>
+      <figcaption><strong>Figure 8</strong>Example display of GUI when sound is detected vs. no sound detected.</figcaption>
     </figure>
   </div>
 </section>
